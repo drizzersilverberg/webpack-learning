@@ -1,3 +1,11 @@
-.test {
-  background: url('./images/thanos.png');
+.one {
+  background: red;
+}
+
+.two {
+  background: green;
+}
+
+div > p {
+  color: blue;
 }

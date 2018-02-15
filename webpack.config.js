@@ -1,7 +1,9 @@
 var webpack = require('webpack');
 var path = require('path');
-var inProduction = (process.env.NODE_ENV === 'production');
+var glob = require('glob');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+let PurifyCSSPlugin = require('purifycss-webpack');
+var inProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
   entry: {
@@ -19,20 +21,7 @@ module.exports = {
       {
         test: /\.s[ac]ss$/,
         use: ExtractTextPlugin.extract({
-
-          // option 1
-          // use: [
-          //   {
-          //     loader: 'css-loader',
-          //     options: { url: false }
-          //   }
-          // ],
-
-          // option 2 (require raw-loader)
-          // use: ['raw-loader', 'sass-loader'],
-
           use: ['css-loader', 'sass-loader'],
-
           fallback: 'style-loader'
         })
 
@@ -53,6 +42,11 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin('[name].css'),
+    new PurifyCSSPlugin({
+      // Give paths to parse for rules. These should be absolute!
+      paths: glob.sync(path.join(__dirname, 'index.html')), // in laravel this might be: resource/views/**/*.blade.php
+      minimize: inProduction
+    }),
     new webpack.LoaderOptionsPlugin({
       minimize: inProduction
     })
